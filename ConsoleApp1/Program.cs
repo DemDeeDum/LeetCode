@@ -3,11 +3,11 @@
 class Program
 {
     /// <summary>
-    /// Done by Dmytro Lozhka using friend's laptop
+    /// Done by Dmytro Lozhka sometimes using friend's laptop
     /// </summary>
     public static void Main()
     {
-        var a = new RotateArray.Solution();
-        a.Rotate([1, 2], 3);
+        var a = new BestTimeToBuySellTwo.Solution();
+        var c = a.MaxProfit(new[] { 7, 1, 5, 3, 6, 4});
     }
 }

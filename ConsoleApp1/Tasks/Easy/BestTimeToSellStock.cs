@@ -6,20 +6,37 @@
         {
             public int MaxProfit(int[] prices)
             {
-                var maxDifference = 0;
+                var tempDifference = 0;
+                var tempMin = prices[0];
+                var tempMax = prices[0];
+                var difference = 0;
                 for (var j = 0; j < prices.Length; j++)
                 {
-                    for (var i = prices.Length - 1; i >= j; i--)
+                    if (prices[j] < tempMin)
                     {
-                        var difference = prices[j] - prices[i];
-                        if (difference > maxDifference)
+                        tempDifference = tempMax - tempMin;
+                        if (tempDifference > difference)
                         {
-                            maxDifference = difference;
+                            difference = tempDifference;
                         }
+
+                        tempMax = prices[j];
+                        tempMin = prices[j];
+                    }
+
+                    if (tempMax < prices[j])
+                    {
+                        tempMax = prices[j];
                     }
                 }
 
-                return maxDifference;
+                tempDifference = tempMax - tempMin;
+                if (tempDifference > difference)
+                {
+                    difference = tempDifference;
+                }
+
+                return difference > 0 ? difference : 0;
             }
         }
     }
