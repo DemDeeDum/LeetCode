@@ -1,4 +1,4 @@
-﻿using LeetCode.Tasks.Medium;
+﻿using LeetCode.Tasks.Hard;
 
 class Program
 {
@@ -7,7 +7,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new BestTimeToBuySellTwo.Solution();
-        var c = a.MaxProfit(new[] { 7, 1, 5, 3, 6, 4});
+        var a = new BestTimeToBuySellThree.Solution();
+        var c = a.MaxProfit(new[] { 3, 3, 5, 0, 0, 3, 1, 4 });
     }
 }
