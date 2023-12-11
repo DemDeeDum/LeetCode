@@ -8,6 +8,6 @@ class Program
     public static void Main()
     {
         var a = new BestTimeToBuySellThree.Solution();
-        var c = a.MaxProfit(new[] { 3, 3, 5, 0, 0, 3, 1, 4 });
+        var c = a.MaxProfit(new[] { 1, 2, 3, 4, 5 });
     }
 }
