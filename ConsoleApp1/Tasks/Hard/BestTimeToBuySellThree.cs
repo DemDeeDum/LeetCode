@@ -89,10 +89,10 @@
                 //return maxSum1 + maxSum2;
                 #endregion
 
-                var watch = System.Diagnostics.Stopwatch.StartNew();
+                #region Try DP Saving all results Approach FAILED by timeout
                 var matrixLength = prices.Length - 1;
                 var matrix = new int[matrixLength][];
-                for(var i = 0; i < matrixLength; i++)
+                for (var i = 0; i < matrixLength; i++)
                 {
                     matrix[i] = new int[matrixLength - i];
                 }
@@ -104,25 +104,18 @@
                     }
                 }
 
-                watch.Stop();
-                Console.WriteLine(watch.ElapsedMilliseconds);
-
-
-                //for (var i = 0; i < matrixLength; i++)
-                //{
-                //    for (var j = 0; j < matrix[i].Length; j++)
-                //    {
-                //        Console.Write($"{{{i}; {i + j + 1}}} = {matrix[i][j]}\t");
-                //    }
-                //    Console.WriteLine();
-                //}
-
-                watch.Restart();
+                for (var i = 0; i < matrixLength; i++)
+                {
+                    for (var j = 0; j < matrix[i].Length; j++)
+                    {
+                        Console.Write($"{{{i}; {i + j + 1}}} = {matrix[i][j]}\t");
+                    }
+                    Console.WriteLine();
+                }
 
                 var max = 0;
                 for (var i = 0; i < matrixLength; i++)
                 {
-                    Console.WriteLine(watch.ElapsedMilliseconds); 
                     for (var j = 0; j < matrix[i].Length; j++)
                     {
                         if (matrix[i][j] <= 0)
@@ -151,6 +144,7 @@
                 }
 
                 return max;
+                #endregion
             }
         }
     }
