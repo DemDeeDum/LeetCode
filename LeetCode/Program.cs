@@ -7,7 +7,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new JumpGameTwo.Solution();
-        var c = a.Jump(new[] { 1, 2, 1, 1, 1 });
+        var a = new ProductOfArrayExceptSelf.Solution();
+        var c = a.ProductExceptSelf(new[] { 1, 2, 3, 4 });
     }
 }
