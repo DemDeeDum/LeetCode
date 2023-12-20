@@ -8,6 +8,6 @@ class Program
     public static void Main()
     {
         var a = new ProductOfArrayExceptSelf.Solution();
-        var c = a.ProductExceptSelf(new[] { 1, 2, 3, 4 });
+        var c = a.ProductExceptSelf(new[] { 0, 0 });
     }
 }
