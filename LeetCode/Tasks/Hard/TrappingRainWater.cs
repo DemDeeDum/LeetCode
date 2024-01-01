@@ -19,13 +19,11 @@
                         if (valueIndex == -1)
                         {
                             valueIndex = index;
+                            temporary = height[valueIndex] * (height.Length - index - 1);
                         }
                         else if (height[index] < height[valueIndex])
                         {
-                            //if (height[prevViceMaxIndex] < height[index])
-                            //{
-                            //    temporary -= (height[valueIndex] - height[index]) * (height.Length - valueIndex);
-                            //}
+
 
                             trunksSpace += height[index];
                         }
