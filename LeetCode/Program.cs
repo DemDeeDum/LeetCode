@@ -1,4 +1,5 @@
-﻿using LeetCode.Tasks.Hard;
+﻿using LeetCode.Tasks.Easy;
+using LeetCode.Tasks.Hard;
 using LeetCode.Tasks.Medium;
 
 class Program
@@ -8,6 +9,11 @@ class Program
     /// </summary>
     public static void Main()
     {
+        var a = new RomanToInteger.Solution();
+        var c = a.RomanToInt("MCMXCIV");
+
+
+
         //var a = new TrappingRainWater.Solution();
         //var c = a.Trap(new[] { 4, 0, 3, 0, 2, 0, 1 });
         //var c = a.Trap(new[] { 4, 2, 0, 3, 2, 5 });
