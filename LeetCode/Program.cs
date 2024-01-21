@@ -9,7 +9,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new ReverseTheWords.Solution();
-        var c2 = a.ReverseWords("the sky is blue");
+        var a = new ValidPalindrome.Solution();
+        var c2 = a.IsPalindrome("");
     }
 }
