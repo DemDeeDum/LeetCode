@@ -1,6 +1,4 @@
-﻿using LeetCode.Tasks.Easy;
-using LeetCode.Tasks.Hard;
-using LeetCode.Tasks.Medium;
+﻿using LeetCode.Tasks.Medium;
 
 class Program
 {
@@ -9,7 +7,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new ValidPalindrome.Solution();
-        var c2 = a.IsPalindrome("");
+        var a = new MinimizeSubArraySum.Solution();
+        var c2 = a.MinSubArrayLen(15, new[] { 5, 1, 3, 5, 10, 7, 4, 9, 2, 8 });
     }
 }
