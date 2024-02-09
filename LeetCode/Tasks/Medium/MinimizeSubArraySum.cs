@@ -6,72 +6,58 @@
         {
             public int MinSubArrayLen(int target, int[] nums)
             {
-                var result = int.MaxValue;
+                var length = int.MaxValue;
                 var initialSum = 0;
                 var initialCounter = 0;
-                var index = -1;
-                while (initialCounter + index++ < nums.Length)
+                var index = 0;
+                while (initialCounter + index < nums.Length)
                 {
-                    var resultOfSteps = GetStepsToTarget(nums, index + initialCounter, target, result, ref initialSum, ref initialCounter);
-                    if (resultOfSteps.Result)
+                    var result = GetStepsToTarget(nums, index + initialCounter, target, length, ref initialSum, ref initialCounter);
+                    if (result.InstantReturn)
                     {
-                        initialCounter++;
-                        var j = index;
-                        index--;
-                        while (initialSum >= target)
-                        {
-                            initialSum -= nums[j++];
-                            initialCounter--;
-                            index++;
-                        }
+                        break;
+                    }
 
-                        result = initialCounter;
+                    while (initialSum >= target)
+                    {
+                        initialSum -= nums[index++];
                         initialCounter--;
                     }
-                    else
-                    {
-                        initialCounter -= initialCounter == 0 ? 0 : 1;
-                        initialSum -= initialSum == 0 ? 0 : 1;
-                    }
 
-                    if (resultOfSteps.ShouldStop)
+                    length = Math.Min(length, initialCounter + 1);
+
+                    if (result.AssignThenReturn)
                     {
                         break;
                     }
                 }
 
-                return result == int.MaxValue ? 0 : result;
+                return length == int.MaxValue ? 0 : length;
             }
 
-            private (bool Result, bool ShouldStop) GetStepsToTarget(int[] nums, int index, int target, int prevMin, ref int sum, ref int counter)
+            private (bool InstantReturn, bool AssignThenReturn) GetStepsToTarget(int[] nums, int index, int target, int prevMin, ref int sum, ref int counter)
             {
                 var localSum = sum;
                 var localCounter = counter;
-                while (index < nums.Length && localSum < target && localCounter < prevMin)
+                while (index < nums.Length && localSum < target)
                 {
                     localSum += nums[index++];
                     localCounter++;
                 }
 
-                if (localSum < target)
+                if (index == nums.Length && localSum < target)
                 {
-                    return (false, true);
+                    return (true, false);
                 }
-
-                if (localCounter > prevMin)
-                {
-                    return (false, false);
-                }
-
                 counter = localCounter;
                 sum = localSum;
 
                 if (counter == 1)
                 {
-                    return (true, true);
+                    return (false, true);
                 }
 
-                return (true, false);
+                return (false, false);
             }
         }
     }
