@@ -1,4 +1,4 @@
-﻿using LeetCode.Tasks.Medium;
+﻿using LeetCode.Tasks.Hard;
 
 class Program
 {
@@ -7,7 +7,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new LongestSubstringWithoutRepeat.Solution();
-        var c2 = a.LengthOfLongestSubstring("bbtablud");
+        var a = new SubstringOfConcatenation.Solution();
+        var c2 = a.FindSubstring("barfoothefoobarman", new[] { "foo", "bar" });
     }
 }
