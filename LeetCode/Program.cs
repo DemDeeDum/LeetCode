@@ -7,7 +7,7 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new SubstringOfConcatenation.Solution();
-        var c2 = a.FindSubstring("barfoothefoobarman", new[] { "foo", "bar" });
+        var a = new MinimumWindowSubstring.Solution();
+        var c2 = a.MinWindow("aacbaccccaabcabbcab", "bcbbacaaab");
     }
 }
