@@ -8,71 +8,39 @@
             {
                 var firstIndexMin = -1;
                 var length = int.MaxValue;
-                var data = t
-                    .Select(x => new Indicator
-                    {
-                        Character = x,
-                        Index = -1
-                    })
-                    .ToList();
+                var data = new Dictionary<char, List<int>>();
+                foreach (var character in t.Distinct())
+                {
+                    data.Add(character, Enumerable.Repeat(-1, t.Count(x => x.Equals(character))).ToList());
+                }
 
                 for (var i = 0; i < s.Length; i++)
                 {
-                    var elementIndex = data.FindIndex(x => x.Character == s[i]);
-                    if (elementIndex != -1)
+                    if (data.TryGetValue(s[i], out var list))
                     {
-                        var previousIndexes = new List<int>((data.Count / 2) + 1) { elementIndex };
-
-                        while (data[elementIndex].Index != -1 && elementIndex < data.Count - 1)
+                        var notFoundElementIndex = list.FindIndex(x => x == -1);
+                        if (notFoundElementIndex != -1)
                         {
-                            var temp = elementIndex;
+                            list[notFoundElementIndex] = i;
 
-                            elementIndex = data.FindIndex(elementIndex + 1, x => x.Character == s[i]);
-                            if (elementIndex == -1)
+                            if (CheckIfEverythingFoundAndFirstIndex(data, out var listWithFirstIndex))
                             {
-                                elementIndex = temp;
-
-                                break;
-                            }
-
-                            previousIndexes.Add(elementIndex);
-                        }
-
-                        if (data[elementIndex].Index == -1)
-                        {
-                            data[elementIndex].Index = i;
-
-                            if (data.All(x => x.Index != -1))
-                            {
-                                var element = data.MinBy(x => x.Index);
-                                var foundLength = i - element!.Index + 1;
-                                if (length > foundLength)
-                                {
-                                    length = foundLength;
-                                    firstIndexMin = element.Index;
-                                }
-
-                                element.Index = -1;
+                                TryUpdateMin(i, ref length, ref firstIndexMin, listWithFirstIndex!);
                             }
                         }
                         else
                         {
-                            if (previousIndexes.Any())
+                            for (var j = 0; j < list.Count - 1; j++)
                             {
-                                previousIndexes.RemoveAt(previousIndexes.Count - 1);
-
-                                if (previousIndexes.Any())
-                                {
-                                    for (var j = 0; j < previousIndexes.Count - 1; j++)
-                                    {
-                                        data[previousIndexes[j] + 1].Index = data[previousIndexes[j]].Index;
-                                    }
-
-                                    data[previousIndexes[0]].Index = data[elementIndex].Index;
-                                }
+                                list[j] = list[j + 1];
                             }
 
-                            data[elementIndex].Index = i;
+                            list[list.Count - 1] = i;
+
+                            if (CheckIfEverythingFoundAndFirstIndex(data, out var listWithFirstIndex))
+                            {
+                                TryUpdateMin(i, ref length, ref firstIndexMin, listWithFirstIndex!);
+                            }
                         }
                     }
                 }
@@ -80,11 +48,41 @@
                 return length.Equals(int.MaxValue) ? string.Empty : s.Substring(firstIndexMin, length);
             }
 
-            private class Indicator
+            public void TryUpdateMin(int i, ref int length, ref int firstIndexMin, List<int> list)
             {
-                public char Character { get; set; }
+                var foundLength = i - list[0] + 1;
+                if (length > foundLength)
+                {
+                    length = foundLength;
+                    firstIndexMin = list[0];
+                }
 
-                public int Index { get; set; }
+                for (var j = 0; j < list.Count - 1; j++)
+                {
+                    list[j] = list[j + 1];
+                }
+
+                list[list.Count - 1] = -1;
+            }
+
+            private bool CheckIfEverythingFoundAndFirstIndex(Dictionary<char, List<int>> data, out List<int>? list)
+            {
+                list = null;
+                var value = int.MaxValue;
+                foreach (var pair in data)
+                {
+                    if (pair.Value[pair.Value.Count - 1] == -1)
+                    {
+                        return false;
+                    }
+                    else if (pair.Value[0] < value)
+                    {
+                        list = pair.Value;
+                        value = pair.Value[0];
+                    }
+                }
+
+                return true;
             }
         }
     }

@@ -8,6 +8,6 @@ class Program
     public static void Main()
     {
         var a = new MinimumWindowSubstring.Solution();
-        var c2 = a.MinWindow("aacbaccccaabcabbcab", "bcbbacaaab");
+        var c2 = a.MinWindow("bccabccbbaaacbcbc", "aac"); // aac
     }
 }
