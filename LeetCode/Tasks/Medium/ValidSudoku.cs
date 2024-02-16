@@ -4,6 +4,19 @@
     {
         public class Solution
         {
+            private int[][] _squrareIndex = new int[][]
+            {
+                new int[] { 0, 0, 0, 1, 1, 1, 2, 2, 2 },
+                new int[] { 0, 0, 0, 1, 1, 1, 2, 2, 2 },
+                new int[] { 0, 0, 0, 1, 1, 1, 2, 2, 2 },
+                new int[] { 3, 3, 3, 4, 4, 4, 5, 5, 5 },
+                new int[] { 3, 3, 3, 4, 4, 4, 5, 5, 5 },
+                new int[] { 3, 3, 3, 4, 4, 4, 5, 5, 5 },
+                new int[] { 6, 6, 6, 7, 7, 7, 8, 8, 8 },
+                new int[] { 6, 6, 6, 7, 7, 7, 8, 8, 8 },
+                new int[] { 6, 6, 6, 7, 7, 7, 8, 8, 8 },
+            };
+
             public bool IsValidSudoku(char[][] board)
             {
                 var lineIndex = 0;
@@ -30,7 +43,7 @@
                         }
                         else if (listsForCheckColumns[columnIndex].Contains(board[lineIndex][columnIndex])
                             || listsForCheckLines[lineIndex].Contains(board[lineIndex][columnIndex])
-                            || GetSquareList(listsForCheckSquares, lineIndex, columnIndex).Contains(board[lineIndex][columnIndex]))
+                            || listsForCheckSquares[_squrareIndex[lineIndex][columnIndex]].Contains(board[lineIndex][columnIndex]))
                         {
                             return false;
                         }
@@ -38,7 +51,7 @@
                         {
                             listsForCheckColumns[columnIndex].Add(board[lineIndex][columnIndex]);
                             listsForCheckLines[lineIndex].Add(board[lineIndex][columnIndex]);
-                            GetSquareList(listsForCheckSquares, lineIndex, columnIndex).Add(board[lineIndex][columnIndex]);
+                            listsForCheckSquares[_squrareIndex[lineIndex][columnIndex]].Add(board[lineIndex][columnIndex]);
                         }
                     }
 
@@ -46,31 +59,6 @@
                 }
 
                 return true;
-            }
-
-            private List<char> GetSquareList(List<char>[] lists, int lineIndex, int columnIndex)
-            {
-                var lineNumber = lineIndex < 3 ? 1 : lineIndex < 6 ? 2 : 3;
-                var columnNumber = columnIndex < 3 ? 1 : columnIndex < 6 ? 2 : 3;
-                var index = GetIndex(lineNumber, columnNumber);
-
-                return lists[index];
-            }
-
-            private int GetIndex(int lineNumber, int columnNumber)
-            {
-                if (lineNumber == 1)
-                {
-                    return columnNumber == 1 ? 0 : columnNumber == 2 ? 1 : 2;
-                }
-                else if (lineNumber == 2)
-                {
-                    return columnNumber == 1 ? 3 : columnNumber == 2 ? 4 : 5;
-                }
-                else
-                {
-                    return columnNumber == 1 ? 6 : columnNumber == 2 ? 7 : 8;
-                }
             }
         }
     }
