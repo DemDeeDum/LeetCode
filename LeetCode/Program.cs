@@ -1,4 +1,4 @@
-﻿using LeetCode.Tasks.Medium;
+﻿using LeetCode.Tasks.Hard;
 
 class Program
 {
@@ -7,19 +7,19 @@ class Program
     /// </summary>
     public static void Main()
     {
-        var a = new SpiralMatrix.Solution();
-        var c2 = a.SpiralOrder(new int[][]
+        var a = new SudokuSolver.Solution();
+        var d = new char[][]
         {
-            new int[] { 1,11},
-            new int[] { 2,12},
-            new int[] { 3,13},
-            new int[] { 4,14},
-            new int[] { 5,15},
-            new int[] { 6,16},
-            new int[] { 7,17},
-            new int[] { 8,18},
-            new int[] { 9,19},
-            new int[] { 10, 20 }
-        });
+            new char[] { '5','3','.','.','7','.','.','.','.' },
+            new char[] { '6','.','.','1','9','5','.','.','.'},
+            new char[] { '.','9','8','.','.','.','.','6','.' },
+            new char[] { '8', '.', '.', '.', '6', '.', '.', '.', '3' },
+            new char[] { '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+            new char[] { '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+            new char[] { '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+            new char[] { '.', '.', '.', '4', '1', '9', '.', '.', '5' },
+            new char[] { '.', '.', '.', '.', '8', '.', '.', '7', '9' }
+        };
+        a.SolveSudoku(d);
     }
 }
