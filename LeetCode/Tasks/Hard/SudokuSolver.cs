@@ -91,7 +91,7 @@
                 }
             }
 
-            private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve, bool addMode = false)
+            private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve)
             {
                 foreach (var item in coordinatesToSolve)
                 {
@@ -109,7 +109,6 @@
                     if (uniqueValue != default)
                     {
                         board[element.Coordinates.I][element.Coordinates.J] = uniqueValue;
-                        element.Values = new char[] { uniqueValue };
 
                         coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Remove(element.Coordinates);
                         coordinatesToSolvePerLine[element.Coordinates.I].Remove(element.Coordinates);
@@ -133,53 +132,23 @@
 
                         values = otherValues;
                     }
-                    else if (addMode)
-                    {
-                        if (coordinatesToSolvePerSquare.ContainsKey(element.Coordinates.SquareIndex))
-                        {
-                            coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Add(element.Coordinates);
-                        }
-                        else
-                        {
-                            coordinatesToSolvePerSquare.Add(element.Coordinates.SquareIndex, new List<DataItem> { element.Coordinates });
-                        }
-                    }
 
-                    foreach (var item in coordinatesToSolve)
+                    foreach (var item in values)
                     {
-                        FindPositions(board, item.I, item.J);
+                        FindPositions(board, item.Coordinates.I, item.Coordinates.J);
                     }
-
-                    values = values.Select(x => (x.Coordinates, Values: cache[GetKey(x.Coordinates.I, x.Coordinates.J)]));
                 }
             }
 
             private void FindPositions(char[][] board, int i, int j)
             {
-                var line = board[i];
-                var column = board.Select(x => x[j]);
-                var possibleByLine = chars.Except(line);
-                var possibleByColumn = chars.Except(column);
-                var square = squareScheme[i][j];
-                var coordinatesOptions = coordinates[square].Where(x => !(x.i == i && x.j == j));
-                var possibleBySquare = new List<char>();
-                for (var k = 0; k < coordinatesOptions.Count(); k++)
-                {
-                    var element = coordinatesOptions.ElementAt(k);
-                    if (board[element.i][element.j] != '.')
-                    {
-                        possibleBySquare.Add(board[element.i][element.j]);
-                    }
-                }
+                var possibleByLine = chars.Except(board[i]);
+                var possibleByColumn = chars.Except(board.Select(x => x[j]));
+                var possibleBySquare = chars.Except(coordinates[squareScheme[i][j]]
+                    .Where(x => !(x.i == i && x.j == j) && board[x.i][x.j] != '.')
+                    .Select(x => board[x.i][x.j]));
 
-                possibleBySquare = chars.Except(possibleBySquare).ToList();
-
-                var possibleByLines = possibleByLine.Intersect(possibleByColumn);
-                var possibleSolutions = possibleBySquare.Intersect(possibleByLines);
-                if (possibleSolutions.Any())
-                {
-                    cache[GetKey(i, j)] = possibleSolutions.ToList();
-                }
+                cache[GetKey(i, j)] = possibleBySquare.Intersect(possibleByColumn).Intersect(possibleByLine).ToList();
             }
 
             private string GetKey(int i, int j) => $"{i}:{j}";
