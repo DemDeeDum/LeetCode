@@ -31,30 +31,142 @@
                 new (int i, int j)[] { (6, 6), (6,7), (6,8), (7,6), (7, 7), (7, 8), (8 , 6), (8, 7), (8, 8) },
             };
 
+            private Dictionary<int, IList<DataItem>> coordinatesToSolvePerSquare = new Dictionary<int, IList<DataItem>>();
+            private Dictionary<int, IList<DataItem>> coordinatesToSolvePerLine = new Dictionary<int, IList<DataItem>>();
+            private Dictionary<int, IList<DataItem>> coordinatesToSolvePerColumn = new Dictionary<int, IList<DataItem>>();
+            private Dictionary<string, IList<char>> cache = new Dictionary<string, IList<char>>();
+
             public void SolveSudoku(char[][] board)
             {
-                for (var i = 0; i < board.Length; i++)
+                for (var i = 0; i < coordinates.Length; i++)
                 {
-                    for (var j = 0; j < board[i].Length; j++)
+                    coordinatesToSolvePerSquare.Add(i, new List<DataItem>());
+                    for (var j = 0; j < coordinates[i].Length; j++)
                     {
-                        if (board[i][j] == '.')
+                        var current = coordinates[i][j];
+                        if (board[current.i][current.j] == '.')
                         {
-                            board[i][j] = GetPosition(board, i, j, new char[] { });
+                            var dataItem = new DataItem(current.i, current.j, i);
+                            coordinatesToSolvePerSquare[i].Add(dataItem);
+
+                            if (coordinatesToSolvePerLine.ContainsKey(current.i))
+                            {
+                                coordinatesToSolvePerLine[current.i].Add(dataItem);
+                            }
+                            else
+                            {
+                                coordinatesToSolvePerLine.Add(current.i, new List<DataItem> { dataItem });
+                            }
+
+                            if (coordinatesToSolvePerColumn.ContainsKey(current.j))
+                            {
+                                coordinatesToSolvePerColumn[current.j].Add(dataItem);
+                            }
+                            else
+                            {
+                                coordinatesToSolvePerColumn.Add(current.j, new List<DataItem> { dataItem });
+                            }
                         }
+                    }
+
+                    SetUpValues(board, coordinatesToSolvePerSquare[i]);
+                }
+
+                while (coordinatesToSolvePerSquare.Any())
+                {
+                    foreach (var squareWithCoordinates in coordinatesToSolvePerSquare)
+                    {
+                        SetUpValues(board, squareWithCoordinates.Value);
+                    }
+
+                    foreach (var lineWithCoordinates in coordinatesToSolvePerLine)
+                    {
+                        SetUpValues(board, lineWithCoordinates.Value);
+                    }
+
+                    foreach (var columnWithCoordinates in coordinatesToSolvePerColumn)
+                    {
+                        SetUpValues(board, columnWithCoordinates.Value);
                     }
                 }
             }
 
-            private char GetPosition(char[][] board, int i, int j, char[] skip)
+            private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve, bool addMode = false)
             {
-                var possibleCharsByLines = chars.Except(board[i]).Intersect(chars.Except(board.Select(x => x[j])));
+                foreach (var item in coordinatesToSolve)
+                {
+                    FindPositions(board, item.I, item.J);
+                }
+
+                var values = coordinatesToSolve.Select(x => (Coordinates: x, Values: cache[GetKey(x.I, x.J)]));
+                for (int i = 0; i < values.Count(); i++)
+                {
+                    var element = values.ElementAt(i);
+                    var otherValues = values.Where(x => element.Coordinates != x.Coordinates);
+                    var uniqueValues = element.Values.Where(x => otherValues.All(y => !y.Values.Contains(x)));
+                    var uniqueValue = uniqueValues.Count() == 1 ? uniqueValues.First() : default;
+
+                    if (uniqueValue != default)
+                    {
+                        board[element.Coordinates.I][element.Coordinates.J] = uniqueValue;
+                        element.Values = new char[] { uniqueValue };
+
+                        coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Remove(element.Coordinates);
+                        coordinatesToSolvePerLine[element.Coordinates.I].Remove(element.Coordinates);
+                        coordinatesToSolvePerColumn[element.Coordinates.J].Remove(element.Coordinates);
+                        if (!coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Any())
+                        {
+                            coordinatesToSolvePerSquare.Remove(element.Coordinates.SquareIndex);
+                        }
+
+                        if (!coordinatesToSolvePerLine[element.Coordinates.I].Any())
+                        {
+                            coordinatesToSolvePerLine.Remove(element.Coordinates.I);
+                        }
+
+                        if (!coordinatesToSolvePerColumn[element.Coordinates.J].Any())
+                        {
+                            coordinatesToSolvePerColumn.Remove(element.Coordinates.J);
+                        }
+
+                        cache[GetKey(element.Coordinates.I, element.Coordinates.J)] = element.Values;
+
+                        values = otherValues;
+                    }
+                    else if (addMode)
+                    {
+                        if (coordinatesToSolvePerSquare.ContainsKey(element.Coordinates.SquareIndex))
+                        {
+                            coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Add(element.Coordinates);
+                        }
+                        else
+                        {
+                            coordinatesToSolvePerSquare.Add(element.Coordinates.SquareIndex, new List<DataItem> { element.Coordinates });
+                        }
+                    }
+
+                    foreach (var item in coordinatesToSolve)
+                    {
+                        FindPositions(board, item.I, item.J);
+                    }
+
+                    values = values.Select(x => (x.Coordinates, Values: cache[GetKey(x.Coordinates.I, x.Coordinates.J)]));
+                }
+            }
+
+            private void FindPositions(char[][] board, int i, int j)
+            {
+                var line = board[i];
+                var column = board.Select(x => x[j]);
+                var possibleByLine = chars.Except(line);
+                var possibleByColumn = chars.Except(column);
                 var square = squareScheme[i][j];
                 var coordinatesOptions = coordinates[square].Where(x => !(x.i == i && x.j == j));
                 var possibleBySquare = new List<char>();
                 for (var k = 0; k < coordinatesOptions.Count(); k++)
                 {
                     var element = coordinatesOptions.ElementAt(k);
-                    if (board[element.i][element.j] == '.')
+                    if (board[element.i][element.j] != '.')
                     {
                         possibleBySquare.Add(board[element.i][element.j]);
                     }
@@ -62,15 +174,30 @@
 
                 possibleBySquare = chars.Except(possibleBySquare).ToList();
 
-                var possibleSolution = possibleBySquare.Intersect(possibleCharsByLines).FirstOrDefault();
-                if (possibleSolution != default)
+                var possibleByLines = possibleByLine.Intersect(possibleByColumn);
+                var possibleSolutions = possibleBySquare.Intersect(possibleByLines);
+                if (possibleSolutions.Any())
                 {
-                    return possibleSolution;
+                    cache[GetKey(i, j)] = possibleSolutions.ToList();
                 }
-                else
+            }
+
+            private string GetKey(int i, int j) => $"{i}:{j}";
+
+            private class DataItem
+            {
+                public DataItem(int i, int j, int squareIndex)
                 {
-                    return GetPosition()
+                    I = i;
+                    J = j;
+                    SquareIndex = squareIndex;
                 }
+
+                public int I { get; set; }
+
+                public int J { get; set; }
+
+                public int SquareIndex { get; set; }
             }
         }
     }
