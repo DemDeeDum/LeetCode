@@ -93,6 +93,7 @@
 
             private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve)
             {
+                Prind(board);
                 foreach (var item in coordinatesToSolve)
                 {
                     FindPositions(board, item.I, item.J);
@@ -132,11 +133,6 @@
 
                         values = otherValues;
                     }
-
-                    foreach (var item in values)
-                    {
-                        FindPositions(board, item.Coordinates.I, item.Coordinates.J);
-                    }
                 }
             }
 
@@ -167,6 +163,26 @@
                 public int J { get; set; }
 
                 public int SquareIndex { get; set; }
+            }
+
+            private void Prind(char[][] board)
+            {
+                Thread.Sleep(2000);
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------");
+                for (var i = 0; i < board.Length; i++)
+                {
+                    for (var j = 0; j < board[i].Length; j++)
+                    {
+                        Console.Write($"{board[i][j]}\t");
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
             }
         }
     }
