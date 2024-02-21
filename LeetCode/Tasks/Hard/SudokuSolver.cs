@@ -38,6 +38,7 @@
 
             public void SolveSudoku(char[][] board)
             {
+                var somethingChanges = true;
                 for (var i = 0; i < coordinates.Length; i++)
                 {
                     coordinatesToSolvePerSquare.Add(i, new List<DataItem>());
@@ -69,35 +70,40 @@
                         }
                     }
 
-                    SetUpValues(board, coordinatesToSolvePerSquare[i]);
+                    SetUpValues(board, coordinatesToSolvePerSquare[i], ref somethingChanges, Mode.Square);
                 }
 
                 while (coordinatesToSolvePerSquare.Any())
                 {
                     foreach (var squareWithCoordinates in coordinatesToSolvePerSquare)
                     {
-                        SetUpValues(board, squareWithCoordinates.Value);
+                        SetUpValues(board, squareWithCoordinates.Value, ref somethingChanges, Mode.Square);
                     }
 
                     foreach (var lineWithCoordinates in coordinatesToSolvePerLine)
                     {
-                        SetUpValues(board, lineWithCoordinates.Value);
+                        SetUpValues(board, lineWithCoordinates.Value, ref somethingChanges, Mode.Line);
                     }
 
                     foreach (var columnWithCoordinates in coordinatesToSolvePerColumn)
                     {
-                        SetUpValues(board, columnWithCoordinates.Value);
+                        SetUpValues(board, columnWithCoordinates.Value, ref somethingChanges, Mode.Column);
                     }
                 }
             }
 
-            private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve)
+            private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve, ref bool somethingChanges, Mode mode)
             {
                 Prind(board);
-                foreach (var item in coordinatesToSolve)
+                if (true)
                 {
-                    FindPositions(board, item.I, item.J);
+                    foreach (var item in coordinatesToSolve)
+                    {
+                        FindPositions(board, item.I, item.J, coordinatesToSolve, mode);
+                    }
                 }
+
+                somethingChanges = false;
 
                 var values = coordinatesToSolve.Select(x => (Coordinates: x, Values: cache[GetKey(x.I, x.J)]));
                 for (int i = 0; i < values.Count(); i++)
@@ -105,7 +111,7 @@
                     var element = values.ElementAt(i);
                     var otherValues = values.Where(x => element.Coordinates != x.Coordinates);
                     var uniqueValues = element.Values.Where(x => otherValues.All(y => !y.Values.Contains(x)));
-                    var uniqueValue = uniqueValues.Count() == 1 ? uniqueValues.First() : default;
+                    var uniqueValue = uniqueValues.FirstOrDefault();
 
                     if (uniqueValue != default)
                     {
@@ -132,11 +138,12 @@
                         cache[GetKey(element.Coordinates.I, element.Coordinates.J)] = element.Values;
 
                         values = otherValues;
+                        somethingChanges = true;
                     }
                 }
             }
 
-            private void FindPositions(char[][] board, int i, int j)
+            private void FindPositions(char[][] board, int i, int j, IList<DataItem> coordinatesToSolve, Mode mode)
             {
                 var possibleByLine = chars.Except(board[i]);
                 var possibleByColumn = chars.Except(board.Select(x => x[j]));
@@ -144,10 +151,45 @@
                     .Where(x => !(x.i == i && x.j == j) && board[x.i][x.j] != '.')
                     .Select(x => board[x.i][x.j]));
 
-                cache[GetKey(i, j)] = possibleBySquare.Intersect(possibleByColumn).Intersect(possibleByLine).ToList();
+                var possibleValues = possibleBySquare.Intersect(possibleByColumn).Intersect(possibleByLine).ToList();
+                if (!possibleValues.Any())
+                {
+                    var possibleForAlternative =
+                        mode.Equals(Mode.Column)
+                        ? possibleBySquare.Intersect(possibleBySquare)
+                        : mode.Equals(Mode.Line)
+                        ? possibleBySquare.Intersect(possibleByColumn)
+                        : possibleByLine.Intersect(possibleByColumn);
+
+                    possibleValues = FindAlternatives(board, i, j, coordinatesToSolve, possibleForAlternative);
+                }
+
+                cache[GetKey(i, j)] = possibleValues;
+            }
+
+            private List<char> FindAlternatives(char[][] board, int iCoordinate, int jCoordinate, IList<DataItem> coordinatesToSolve, IEnumerable<char> otherPossible)
+            {
+                for (var i = 0; i < coordinatesToSolve.Count; i++)
+                {
+                    var element = coordinatesToSolve[i];
+                    if (iCoordinate == element.I && jCoordinate == element.J)
+                    {
+                        continue;
+                    }
+
+                    var elementValues = cache[GetKey(element.I, element.J)];
+                    elementValues.Any(Cont)
+                }
             }
 
             private string GetKey(int i, int j) => $"{i}:{j}";
+
+            private enum Mode
+            {
+                Line,
+                Column,
+                Square
+            }
 
             private class DataItem
             {
@@ -167,7 +209,7 @@
 
             private void Prind(char[][] board)
             {
-                Thread.Sleep(2000);
+                //Thread.Sleep(2000);
                 Console.WriteLine("---------------------------------------------------------");
                 Console.WriteLine("---------------------------------------------------------");
                 Console.WriteLine("---------------------------------------------------------");
