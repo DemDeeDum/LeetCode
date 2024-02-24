@@ -35,9 +35,11 @@
             private Dictionary<int, IList<DataItem>> coordinatesToSolvePerLine = new Dictionary<int, IList<DataItem>>();
             private Dictionary<int, IList<DataItem>> coordinatesToSolvePerColumn = new Dictionary<int, IList<DataItem>>();
             private Dictionary<string, IList<char>> cache = new Dictionary<string, IList<char>>();
+            private List<DataItem> solved;
 
             public void SolveSudoku(char[][] board)
             {
+                solved = new List<DataItem>(board.Length * board[0].Length);
                 var somethingChanges = true;
                 for (var i = 0; i < coordinates.Length; i++)
                 {
@@ -94,13 +96,17 @@
 
             private void SetUpValues(char[][] board, IList<DataItem> coordinatesToSolve, ref bool somethingChanges, Mode mode)
             {
-                Prind(board);
                 if (true)
                 {
                     foreach (var item in coordinatesToSolve)
                     {
-                        FindPositions(board, item.I, item.J, coordinatesToSolve, mode);
+                        FindPositions(board, item.I, item.J, mode);
                     }
+                }
+
+                if (coordinatesToSolve.All(x => x.I == 8))
+                {
+
                 }
 
                 somethingChanges = false;
@@ -109,13 +115,11 @@
                 for (int i = 0; i < values.Count(); i++)
                 {
                     var element = values.ElementAt(i);
-                    var otherValues = values.Where(x => element.Coordinates != x.Coordinates);
-                    var uniqueValues = element.Values.Where(x => otherValues.All(y => !y.Values.Contains(x)));
-                    var uniqueValue = uniqueValues.FirstOrDefault();
+                    var value = element.Values.FirstOrDefault();
 
-                    if (uniqueValue != default)
+                    if (value != default)
                     {
-                        board[element.Coordinates.I][element.Coordinates.J] = uniqueValue;
+                        board[element.Coordinates.I][element.Coordinates.J] = value;
 
                         coordinatesToSolvePerSquare[element.Coordinates.SquareIndex].Remove(element.Coordinates);
                         coordinatesToSolvePerLine[element.Coordinates.I].Remove(element.Coordinates);
@@ -135,15 +139,20 @@
                             coordinatesToSolvePerColumn.Remove(element.Coordinates.J);
                         }
 
-                        cache[GetKey(element.Coordinates.I, element.Coordinates.J)] = element.Values;
-
-                        values = otherValues;
+                        solved.Add(element.Coordinates);
                         somethingChanges = true;
+
+                        foreach (var item in coordinatesToSolve)
+                        {
+                            FindPositions(board, item.I, item.J, mode);
+                        }
+
+                        Prind(board);
                     }
                 }
             }
 
-            private void FindPositions(char[][] board, int i, int j, IList<DataItem> coordinatesToSolve, Mode mode)
+            private void FindPositions(char[][] board, int i, int j, Mode mode, int recursiveDeep = 0)
             {
                 var possibleByLine = chars.Except(board[i]);
                 var possibleByColumn = chars.Except(board.Select(x => x[j]));
@@ -152,34 +161,61 @@
                     .Select(x => board[x.i][x.j]));
 
                 var possibleValues = possibleBySquare.Intersect(possibleByColumn).Intersect(possibleByLine).ToList();
-                if (!possibleValues.Any())
+                if (!possibleValues.Any() && recursiveDeep < 81)
                 {
                     var possibleForAlternative =
                         mode.Equals(Mode.Column)
-                        ? possibleBySquare.Intersect(possibleBySquare)
+                        ? possibleBySquare.Intersect(possibleByLine)
                         : mode.Equals(Mode.Line)
                         ? possibleBySquare.Intersect(possibleByColumn)
                         : possibleByLine.Intersect(possibleByColumn);
 
-                    possibleValues = FindAlternatives(board, i, j, coordinatesToSolve, possibleForAlternative);
+                    possibleValues = FindAlternatives(board, i, j, possibleForAlternative, mode, recursiveDeep + 1);
                 }
 
                 cache[GetKey(i, j)] = possibleValues;
             }
-
-            private List<char> FindAlternatives(char[][] board, int iCoordinate, int jCoordinate, IList<DataItem> coordinatesToSolve, IEnumerable<char> otherPossible)
+            /// <summary>
+            /// 1) place which possible
+            /// 2) if not find exchange recursively
+            /// </summary>
+            /// <param name="board"></param>
+            /// <param name="iCoordinate"></param>
+            /// <param name="jCoordinate"></param>
+            /// <param name="otherPossible"></param>
+            /// <param name="mode"></param>
+            /// <param name="recursiveDeep"></param>
+            /// <returns></returns>
+            private List<char> FindAlternatives(char[][] board, int iCoordinate, int jCoordinate, IEnumerable<char> otherPossible, Mode mode, int recursiveDeep = 0)
             {
-                for (var i = 0; i < coordinatesToSolve.Count; i++)
-                {
-                    var element = coordinatesToSolve[i];
-                    if (iCoordinate == element.I && jCoordinate == element.J)
-                    {
-                        continue;
-                    }
+                var coordinatesToFindAlternativeFrom = mode == Mode.Line
+                    ? solved.Where(x => x.I == iCoordinate)
+                    : mode == Mode.Column
+                    ? solved.Where(x => x.J == jCoordinate)
+                    : solved.Where(y => coordinates[squareScheme[iCoordinate][jCoordinate]].Any(x => y.I == x.i && y.J == x.j));
 
-                    var elementValues = cache[GetKey(element.I, element.J)];
-                    elementValues.Any(Cont)
+                foreach (var element in coordinatesToFindAlternativeFrom)
+                {
+                    FindPositions(board, element.I, element.J, mode, recursiveDeep);
                 }
+
+                for (var i = 0; i < coordinatesToFindAlternativeFrom.Count(); i++)
+                {
+                    var element = coordinatesToFindAlternativeFrom.ElementAt(i);
+                    var commonValue = otherPossible.FirstOrDefault(x => x == board[element.I][element.J]);
+                    if (commonValue != default)
+                    {
+                        var elementPossibleValues = cache[GetKey(element.I, element.J)];
+                        if (elementPossibleValues.Any())
+                        {
+                            board[element.I][element.J] = elementPossibleValues.First();
+
+                            return new List<char> { commonValue };
+                        }
+                    }
+                }
+
+                return new List<char>();
             }
 
             private string GetKey(int i, int j) => $"{i}:{j}";
