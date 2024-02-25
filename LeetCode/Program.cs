@@ -37,6 +37,8 @@ class Program
 
         int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
         var a = new ValidAnagram.Solution();
-        var s = a.IsAnagram("a", "ab");
+        var s = a.IsAnagram("abdc", "dbac");
+
+        Console.WriteLine($"{(int)'a'} {(int)'z'}");
     }
 }

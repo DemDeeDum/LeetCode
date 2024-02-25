@@ -11,30 +11,23 @@
                     return false;
                 }
 
-                var dictionaryS = new Dictionary<char, int>();
-                var dictionaryT = new Dictionary<char, int>();
+                var dictionaryS = new int[26];
+                var dictionaryT = new int[26];
                 for (int i = 0; i < s.Length; i++)
                 {
-                    if (dictionaryS.ContainsKey(s[i]))
-                    {
-                        dictionaryS[s[i]]++;
-                    }
-                    else
-                    {
-                        dictionaryS.Add(s[i], 1);
-                    }
+                    dictionaryS[s[i] - 97]++;
+                    dictionaryT[t[i] - 97]++;
+                }
 
-                    if (dictionaryT.ContainsKey(t[i]))
+                for (var i = 0; i < dictionaryS.Length; i++)
+                {
+                    if (dictionaryS[i] != dictionaryT[i])
                     {
-                        dictionaryT[t[i]]++;
-                    }
-                    else
-                    {
-                        dictionaryT.Add(t[i], 1);
+                        return false;
                     }
                 }
 
-                return dictionaryS.All(x => dictionaryT.TryGetValue(x.Key, out var count) ? count == x.Value : false) && dictionaryT.All(x => dictionaryS.ContainsKey(x.Key));
+                return true;
             }
         }
     }

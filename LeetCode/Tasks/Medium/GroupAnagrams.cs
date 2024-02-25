@@ -4,18 +4,20 @@
     {
         public class Solution
         {
+            private IDictionary<int, int[]> cache = new Dictionary<int, int[]>();
+
             public IList<IList<string>> GroupAnagrams(string[] strs)
             {
                 var listOflists = new List<IList<string>>();
 
-                foreach (var str in strs)
+                for (var j = 0; j < strs.Length; j++)
                 {
                     var found = false;
-                    foreach (var list in listOflists)
+                    for (var i = 0; i < listOflists.Count; i++)
                     {
-                        if (IsAnagram(list.First(), str))
+                        if (listOflists[i].First().Length == strs[j].Length && IsAnagram(i, strs[j]))
                         {
-                            list.Add(str);
+                            listOflists[i].Add(strs[j]);
                             found = true;
 
                             break;
@@ -24,44 +26,50 @@
 
                     if (!found)
                     {
-                        listOflists.Add(new List<string> { str });
+                        listOflists.Add(new List<string> { strs[j] });
+                        if (!cache.TryGetValue(-1, out var data))
+                        {
+                            data = RetrieveData(strs[j]);
+                        }
+                        else
+                        {
+                            cache.Remove(-1);
+                        }
+
+                        cache.Add(listOflists.Count - 1, data);
                     }
                 }
 
                 return listOflists;
             }
 
-            private bool IsAnagram(string s, string t)
+            private bool IsAnagram(int index, string s)
             {
-                if (s.Length != t.Length)
+                var data = RetrieveData(s);
+                var cacheData = cache[index];
+
+                cache[-1] = data;
+
+                for (var i = 0; i < data.Length; i++)
                 {
-                    return false;
+                    if (cacheData[i] != data[i])
+                    {
+                        return false;
+                    }
                 }
 
-                var dictionaryS = new Dictionary<char, int>();
-                var dictionaryT = new Dictionary<char, int>();
+                return true;
+            }
+
+            private int[] RetrieveData(string s)
+            {
+                var dictionary = new int[26];
                 for (int i = 0; i < s.Length; i++)
                 {
-                    if (dictionaryS.ContainsKey(s[i]))
-                    {
-                        dictionaryS[s[i]]++;
-                    }
-                    else
-                    {
-                        dictionaryS.Add(s[i], 1);
-                    }
-
-                    if (dictionaryT.ContainsKey(t[i]))
-                    {
-                        dictionaryT[t[i]]++;
-                    }
-                    else
-                    {
-                        dictionaryT.Add(t[i], 1);
-                    }
+                    dictionary[s[i] - 97]++;
                 }
 
-                return dictionaryS.All(x => dictionaryT.TryGetValue(x.Key, out var count) ? count == x.Value : false) && dictionaryT.All(x => dictionaryS.ContainsKey(x.Key));
+                return dictionary;
             }
         }
     }
