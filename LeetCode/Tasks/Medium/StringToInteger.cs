@@ -81,7 +81,7 @@
 
                         sign = true;
                     }
-                    else if (char.IsWhiteSpace(character) && (firstNumberFound || !sign.HasValue && firstNumberFound))
+                    else if (char.IsWhiteSpace(character) && (firstNumberFound || sign.HasValue && !firstNumberFound))
                     {
                         break;
                     }
