@@ -36,7 +36,7 @@ class Program
         //a.SolveSudoku(d2);
 
         int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
-        var a = new InsertInterval.Solution();
-        var s = a.Insert([[1, 3], [6, 9]], [2, 5]);
+        var a = new StringToInteger.Solution();
+        var s = a.MyAtoi("2147483648");
     }
 }
