@@ -1,4 +1,5 @@
-﻿using LeetCode.Tasks.Medium;
+﻿using LeetCode.Tasks.Easy;
+using LeetCode.Tasks.Medium;
 
 class Program
 {
@@ -36,7 +37,7 @@ class Program
         //a.SolveSudoku(d2);
 
         int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
-        var a = new StringToInteger.Solution();
-        var s = a.MyAtoi("2147483648");
+        var a = new ValidParentheses.Solution();
+        var s = a.IsValid("(([{}]))");
     }
-}
+}   
