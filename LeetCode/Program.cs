@@ -37,7 +37,7 @@ class Program
         //a.SolveSudoku(d2);
 
         int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
-        var a = new ValidParentheses.Solution();
-        var s = a.IsValid("(([{}]))");
+        var a = new SimplifyPath.Solution();
+        var s = a.SimplifyPath("/a//b..");
     }
 }   

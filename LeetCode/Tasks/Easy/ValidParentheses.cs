@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace LeetCode.Tasks.Easy
+﻿namespace LeetCode.Tasks.Easy
 {
     internal class ValidParentheses
     {
