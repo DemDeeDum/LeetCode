@@ -1,4 +1,5 @@
 ﻿using LeetCode.Tasks.Easy;
+using LeetCode.Tasks.Hard;
 using LeetCode.Tasks.Medium;
 
 class Program
@@ -37,7 +38,7 @@ class Program
         //a.SolveSudoku(d2);
 
         int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
-        var a = new SimplifyPath.Solution();
-        var s = a.SimplifyPath("/a//b..");
+        var a = new MedianOfTwoSortedArrays.Solution();
+        var s = a.FindMedianSortedArrays([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], [0, 6]);
     }
 }   
