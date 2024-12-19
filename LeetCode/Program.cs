@@ -1,6 +1,7 @@
 ﻿using LeetCode.Tasks.Easy;
 using LeetCode.Tasks.Hard;
 using LeetCode.Tasks.Medium;
+using Node = LeetCode.Tasks.Medium.CopyListWithRandomPointer.Node;
 
 class Program
 {
@@ -37,8 +38,23 @@ class Program
         //};
         //a.SolveSudoku(d2);
 
-        int[][] c = [[0, 1, 0], [0, 0, 1], [1, 1, 1], [0, 0, 0]];
-        var a = new MedianOfTwoSortedArrays.Solution();
-        var s = a.FindMedianSortedArrays([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22], [0, 6]);
+        var a = new IntegerToEnglishWords.Solution();
+        while (true)
+        {
+            Console.Write("Enter the number: ");
+            var input = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                Console.WriteLine($"{Environment.NewLine} I SAID ENTER THE NUMBER");
+            }
+            else if (decimal.TryParse(input, out decimal number))
+            {
+                Console.WriteLine($"{Environment.NewLine} Here is your number => {a.NumberToWords(number)}");
+            }
+            else
+            {
+                Console.WriteLine($"{Environment.NewLine} IT IS NOT A NUMBER");
+            }
+        }
     }
 }   
