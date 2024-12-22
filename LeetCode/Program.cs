@@ -38,23 +38,27 @@ class Program
         //};
         //a.SolveSudoku(d2);
 
-        var a = new IntegerToEnglishWords.Solution();
-        while (true)
-        {
-            Console.Write("Enter the number: ");
-            var input = Console.ReadLine();
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                Console.WriteLine($"{Environment.NewLine} I SAID ENTER THE NUMBER");
-            }
-            else if (decimal.TryParse(input, out decimal number))
-            {
-                Console.WriteLine($"{Environment.NewLine} Here is your number => {a.NumberToWords(number)}");
-            }
-            else
-            {
-                Console.WriteLine($"{Environment.NewLine} IT IS NOT A NUMBER");
-            }
-        }
+        //var a = new IntegerToEnglishWords.Solution();
+        //while (true)
+        //{
+        //    Console.Write("Enter the number: ");
+        //    var input = Console.ReadLine();
+        //    if (string.IsNullOrWhiteSpace(input))
+        //    {
+        //        Console.WriteLine($"{Environment.NewLine} I SAID ENTER THE NUMBER");
+        //    }
+        //    else if (decimal.TryParse(input, out decimal number))
+        //    {
+        //        Console.WriteLine($"{Environment.NewLine} Here is your number => {a.NumberToWords(number)}");
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine($"{Environment.NewLine} IT IS NOT A NUMBER");
+        //    }
+        //}
+
+
+        var a = new MaximumValueAtGivenIndexInBoundedArray.Solution();
+        var s = a.MaxValue(6, 2, 931384943);
     }
 }   
