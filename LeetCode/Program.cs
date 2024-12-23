@@ -58,7 +58,7 @@ class Program
         //}
 
 
-        var a = new MaximumValueAtGivenIndexInBoundedArray.Solution();
-        var s = a.MaxValue(6, 2, 931384943);
+        var a = new SwapNodesInPairs.Solution();
+        var s = a.SwapPairs(new SwapNodesInPairs.ListNode(0, new SwapNodesInPairs.ListNode(1, new SwapNodesInPairs.ListNode(2, new SwapNodesInPairs.ListNode(4)))));
     }
 }   
