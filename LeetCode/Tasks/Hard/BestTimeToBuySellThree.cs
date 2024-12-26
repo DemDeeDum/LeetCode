@@ -89,61 +89,89 @@
                 //return maxSum1 + maxSum2;
                 #endregion
 
-                #region Try DP Saving all results Approach FAILED by timeout
-                var matrixLength = prices.Length - 1;
-                var matrix = new int[matrixLength][];
-                for (var i = 0; i < matrixLength; i++)
+                //#region Try DP Saving all results Approach FAILED by timeout
+                //var matrixLength = prices.Length - 1;
+                //var matrix = new int[matrixLength][];
+                //for (var i = 0; i < matrixLength; i++)
+                //{
+                //    matrix[i] = new int[matrixLength - i];
+                //}
+                //for (int i = 0; i < prices.Length; i++)
+                //{
+                //    for (int j = i + 1, matrixIndex = 0; j < prices.Length; matrixIndex++, j++)
+                //    {
+                //        matrix[i][matrixIndex] = prices[j] - prices[i];
+                //    }
+                //}
+
+                //for (var i = 0; i < matrixLength; i++)
+                //{
+                //    for (var j = 0; j < matrix[i].Length; j++)
+                //    {
+                //        Console.Write($"{{{i}; {i + j + 1}}} = {matrix[i][j]}\t");
+                //    }
+                //    Console.WriteLine();
+                //}
+
+                //var max = 0;
+                //for (var i = 0; i < matrixLength; i++)
+                //{
+                //    for (var j = 0; j < matrix[i].Length; j++)
+                //    {
+                //        if (matrix[i][j] <= 0)
+                //        {
+                //            continue;
+                //        }
+
+                //        var tempMax = 0;
+                //        for (var k = i + j + 2; k < matrixLength; k++)
+                //        {
+                //            for (var s = 0; s < matrix[k].Length; s++)
+                //            {
+                //                if (tempMax < matrix[k][s])
+                //                {
+                //                    tempMax = matrix[k][s];
+                //                }
+                //            }
+                //        }
+
+                //        tempMax += matrix[i][j];
+                //        if (tempMax > max)
+                //        {
+                //            max = tempMax;
+                //        }
+                //    }
+                //}
+
+                //return max;
+                //#endregion
+
+                #region DP by LeetCode
+                var leftMin = prices[0];
+                var rightMax = prices[prices.Length - 1];
+                var leftProfits = new int[prices.Length];
+                var rightProfits = new int[prices.Length + 1];
+
+                for (var i = 1; i < prices.Length; i++)
                 {
-                    matrix[i] = new int[matrixLength - i];
+                    leftProfits[i] = Math.Max(leftProfits[i - 1], prices[i] - leftMin);
+                    leftMin = Math.Min(leftMin, prices[i]);
+
+                    rightProfits[prices.Length - i] = Math.Max(rightProfits[prices.Length - i + 1], rightMax - prices[prices.Length - i]);
+                    rightMax = Math.Max(rightMax, prices[prices.Length - i]);
                 }
-                for (int i = 0; i < prices.Length; i++)
+
+                var maxProfit = 0;
+                for (var i = 0; i < prices.Length; i++)
                 {
-                    for (int j = i + 1, matrixIndex = 0; j < prices.Length; matrixIndex++, j++)
+                    var tempMax = leftProfits[i] + rightProfits[i + 1];
+                    if (tempMax > maxProfit)
                     {
-                        matrix[i][matrixIndex] = prices[j] - prices[i];
+                        maxProfit = tempMax;
                     }
                 }
 
-                for (var i = 0; i < matrixLength; i++)
-                {
-                    for (var j = 0; j < matrix[i].Length; j++)
-                    {
-                        Console.Write($"{{{i}; {i + j + 1}}} = {matrix[i][j]}\t");
-                    }
-                    Console.WriteLine();
-                }
-
-                var max = 0;
-                for (var i = 0; i < matrixLength; i++)
-                {
-                    for (var j = 0; j < matrix[i].Length; j++)
-                    {
-                        if (matrix[i][j] <= 0)
-                        {
-                            continue;
-                        }
-
-                        var tempMax = 0;
-                        for (var k = i + j + 2; k < matrixLength; k++)
-                        {
-                            for (var s = 0; s < matrix[k].Length; s++)
-                            {
-                                if (tempMax < matrix[k][s])
-                                {
-                                    tempMax = matrix[k][s];
-                                }
-                            }
-                        }
-
-                        tempMax += matrix[i][j];
-                        if (tempMax > max)
-                        {
-                            max = tempMax;
-                        }
-                    }
-                }
-
-                return max;
+                return maxProfit;
                 #endregion
             }
         }
