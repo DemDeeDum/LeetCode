@@ -19,61 +19,61 @@
             public ListNode ReverseKGroup(ListNode head, int k)
             {
                 ListNode? newHead = null;
-                ListNode? currentNew = null;
                 var current = head;
-                var shouldStop = false;
                 var index = 0;
                 var tempHead = current;
-                var tempTail = current;
-                var savedNext = current;
+                var tempCurrent = current;
+                var shouldStop = false;
+                ListNode? prevTail = null;
 
                 while (current != null)
                 {
-                    index = 0;
-                    tempHead = current;
-                    tempTail = current;
-                    current = savedNext;
-                    while (index < k)
+                    index = 1;
+                    var kCheck = current;
+                    while (index++ < k)
                     {
-                        var savedHead = tempHead;
-                        tempHead = current.next;
-                        if (tempHead is null)
+                        kCheck = kCheck.next;
+                        if (kCheck is null)
                         {
                             shouldStop = true;
 
                             break;
                         }
+                    }
 
-                        savedNext = tempHead.next;
-                        tempHead.next = savedHead;
-                        current.next = current;
+                    if (shouldStop)
+                    {
+                        break;
+                    }
+
+                    index = 1;
+                    tempHead = current;
+                    tempCurrent = current;
+
+                    while (index < k)
+                    {
+                        var next = tempCurrent.next;
+
+                        tempCurrent.next = next.next;
+                        next.next = tempHead;
+                        tempHead = next;
+                        if (prevTail is not null)
+                        {
+                            prevTail.next = tempHead;
+                        }
 
                         index++;
                     }
 
-                    if (currentNew == null)
+                    current = tempCurrent.next;
+                    prevTail = tempCurrent;
+                    if (newHead is null)
                     {
                         newHead = tempHead;
-                        currentNew = tempHead;
-                    }
-                    
-                    if (shouldStop)
-                    {
-                        while (current != null)
-                        {
-                            currentNew.next = current;
-                            current = current.next;
-                        }
-                    }
-                    else
-                    {
-                        currentNew.next = tempHead;
-                        currentNew = tempTail;
-                        current =
                     }
                 }
 
-                return newHead;
+                return newHead ?? head;
             }
         }
     }
