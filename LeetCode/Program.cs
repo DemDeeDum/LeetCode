@@ -1,6 +1,7 @@
 ﻿using LeetCode.Tasks.Easy;
 using LeetCode.Tasks.Hard;
 using LeetCode.Tasks.Medium;
+using LeetCode.Tasks.OutOfLeetCode;
 using Node = LeetCode.Tasks.Medium.CopyListWithRandomPointer.Node;
 
 class Program
@@ -59,6 +60,6 @@ class Program
 
 
         var a = new LongestPalindromicSubstring.Solution();
-        var s = a.ReverseKGroup(new ReverseNodesInKGroup.ListNode(1, new ReverseNodesInKGroup.ListNode(2, new ReverseNodesInKGroup.ListNode(3, new ReverseNodesInKGroup.ListNode(4, new ReverseNodesInKGroup.ListNode(5))))), 3);
+        var s = a.LongestPalindrome("aaaaa");
     }
 }   
