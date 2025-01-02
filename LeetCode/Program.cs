@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new UniqueBinarySearchTreeTwo.Solution();
-        var s = a.GenerateTrees(4);
+        var a = new PascalTriangle.Solution();
+        var s = a.Generate(5);
     }
 }   
