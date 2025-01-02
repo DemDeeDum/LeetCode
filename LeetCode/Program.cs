@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new LongestPalindromicSubstring.Solution();
-        var s = a.LongestPalindrome("aaaaa");
+        var a = new UniqueBinarySearchTreeTwo.Solution();
+        var s = a.GenerateTrees(4);
     }
 }   
