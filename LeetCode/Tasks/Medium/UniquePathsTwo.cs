@@ -6,7 +6,7 @@
         {
             public int UniquePathsWithObstacles(int[][] obstacleGrid)
             {
-                if (obstacleGrid.Length == 0 || obstacleGrid[0].Length == 0 || obstacleGrid[0][0] == 1)
+                if (obstacleGrid.Length == 0 || obstacleGrid[0].Length == 0)
                 {
                     return 0;
                 }
@@ -14,42 +14,32 @@
                 var height = obstacleGrid.Length;
                 var width = obstacleGrid[0].Length;
                 var array = new int[height, width];
-                int? indexWhenCrossedLine = null;
-                var indexWhenLineBlocked = width;
-                var indexWhenPreviousLineBlocked = width;
+                var arrayOfPreviousCrosses = new int[width];
+                var arrayOfLineCrosses = new int[width];
+                var indexOfLineCrosses = -1;
+                var indexOfPreviousLineCrosses = 0;
                 for (var i = 0; i < height; i++)
                 {
-                    var crossedLine = false;
-                    var j = indexWhenCrossedLine.GetValueOrDefault();
-                    indexWhenCrossedLine = null;
-
-                    for (; j < width; j++)
+                    arrayOfLineCrosses[0] = -1;
+                    for (var j = arrayOfPreviousCrosses[0]; j < width; j++)
                     {
                         if (obstacleGrid[i][j] == 1)
                         {
-                            if (height == 1)
+                            if (j >= arrayOfPreviousCrosses[indexOfPreviousLineCrosses] || i == 0)
                             {
-                                return 0;
+                                break;
                             }
-
-                            array[i, j] = 0;
-                            indexWhenLineBlocked = Math.Min(indexWhenLineBlocked, j);
 
                             continue;
                         }
 
-                        indexWhenCrossedLine = indexWhenCrossedLine.HasValue ? Math.Min(j, indexWhenCrossedLine.Value) : j;
-                        if (i > 0)
+                        if (j > 0 && array[i, j - 1] == 0 && i > 0 && array[i - 1, j] == 0)
                         {
-                            indexWhenLineBlocked = width;
+                            continue;
                         }
 
-                        if (indexWhenCrossedLine >= indexWhenPreviousLineBlocked)
-                        {
-                            break;
-                        }
+                        arrayOfLineCrosses[++indexOfLineCrosses] = j;
 
-                        crossedLine = true;
                         if (i == 0 || j == 0)
                         {
                             array[i, j] = 1;
@@ -60,12 +50,14 @@
                         }
                     }
 
-                    indexWhenPreviousLineBlocked = indexWhenLineBlocked;
-
-                    if (!crossedLine)
+                    if (arrayOfLineCrosses[0] == -1)
                     {
-                        break;
+                        return 0;
                     }
+
+                    Array.Copy(arrayOfLineCrosses, arrayOfPreviousCrosses, arrayOfLineCrosses.Length);
+                    indexOfPreviousLineCrosses = indexOfLineCrosses;
+                    indexOfLineCrosses = -1;
                 }
 
                 return array[height - 1, width - 1];

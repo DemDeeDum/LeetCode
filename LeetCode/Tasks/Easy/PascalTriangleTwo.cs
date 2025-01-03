@@ -9,8 +9,10 @@
                 var list = new List<int>();
                 for (var i = 0; i < rowIndex; i++)
                 {
-
+                    //
                 }
+
+                return null;
             }
         }
     }

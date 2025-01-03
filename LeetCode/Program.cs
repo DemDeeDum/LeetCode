@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new PascalTriangle.Solution();
-        var s = a.Generate(5);
+        var a = new UniquePathsTwo.Solution();
+        var s = a.UniquePathsWithObstacles([[0, 0], [1, 0]]);
     }
 }   

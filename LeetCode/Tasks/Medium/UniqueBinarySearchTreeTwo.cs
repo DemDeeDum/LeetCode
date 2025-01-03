@@ -59,7 +59,6 @@ namespace LeetCode.Tasks.Medium
                     {
                         if (AddElementToTheTree(new TreeNode(arrayWithoutI[j]), root, 1, deepness))
                         {
-                            i++;
                             arrayWithoutI = GetArrayWithoutValue(arrayWithoutI, j);
                         }
                     }
