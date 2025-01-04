@@ -6,13 +6,17 @@
         {
             public IList<int> GetRow(int rowIndex)
             {
-                var list = new List<int>();
-                for (var i = 0; i < rowIndex; i++)
+                var list = new List<int> (rowIndex) { 1 };
+                for (var i = 1; i < rowIndex; i++)
                 {
-                    //
+                    list.Add(1);
+                    for (var j = list.Count - 2; j > 0; j--)
+                    {
+                        list[j] += list[j - 1];
+                    }
                 }
 
-                return null;
+                return list;
             }
         }
     }

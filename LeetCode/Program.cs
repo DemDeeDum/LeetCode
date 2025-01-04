@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new UniquePathsTwo.Solution();
-        var s = a.UniquePathsWithObstacles([[0, 0], [1, 0]]);
+        var a = new CountingBits.Solution();
+        var s = a.CountBits(5);
     }
 }   
