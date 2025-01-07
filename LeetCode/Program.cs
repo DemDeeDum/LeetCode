@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new CountingBits.Solution();
-        var s = a.CountBits(5);
+        var a = new HouseRobberTwo.Solution();
+        var s = a.Rob([6, 6, 4, 8, 4, 3, 3, 10]);
     }
 }   
