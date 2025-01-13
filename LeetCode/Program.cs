@@ -59,7 +59,7 @@ class Program
         //}
 
 
-        var a = new HouseRobberTwo.Solution();
-        var s = a.Rob([6, 6, 4, 8, 4, 3, 3, 10]);
+        var a = new EditDistance.Solution();
+        var s = a.MinDistance("", "a");
     }
 }   
